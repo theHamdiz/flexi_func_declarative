@@ -1,6 +1,7 @@
 #[allow(unused_macros)]
-/// The `fb` macro (Flexi Block) *or* (Function Builder) simplifies the generation of conditional synchronous or asynchronous functions within Rust code.
+/// The `fb!` macro (Flexi Block) *or* (Function Builder) simplifies the generation of conditional synchronous or asynchronous functions within Rust code.
 ///
+/// It's mainly used alongside flexi_func ff proc macro to mark the async & async parts of your code.
 /// By specifying a mode, function name, parameters, return type, and body, this macro can dynamically create the desired function type based on the provided mode. This approach is particularly useful in contexts where both synchronous and asynchronous versions of a function might be needed, allowing for cleaner code organization and reuse.
 ///
 /// # Syntax
@@ -13,7 +14,7 @@
 ///
 /// # Parameters
 ///
-/// - `mode`: A compile-time string literal that determines whether the generated function is synchronous (`"sync"`) or asynchronous (`"async"`).
+/// - `mode`: A compile-time direct token that determines whether the generated function is synchronous (`sync`) or asynchronous (`async`).
 /// - `function_name`: The identifier for the generated function.
 /// - `parameters`: A comma-separated list of function parameters in the form `parameter_name: Type`.
 /// - `ReturnType`: The return type of the function.
@@ -24,7 +25,7 @@
 /// Generating a synchronous function:
 ///
 /// ```
-/// fb!("sync", greet, (name: String), -> String, {
+/// fb!(sync, greet, (name: String), -> String, {
 ///     format!("Hello, {}", name)
 /// });
 /// ```
@@ -32,7 +33,7 @@
 /// Generating an asynchronous function:
 ///
 /// ```
-/// fb!("async", fetch_data, (url: String), -> Result<String, reqwest::Error>, {
+/// fb!(async, fetch_data, (url: String), -> Result<String, reqwest::Error>, {
 ///     reqwest::get(&url).await?.text().await
 /// });
 /// ```
@@ -41,43 +42,49 @@
 ///
 /// ## Conditional Compilation
 ///
-/// The `fb` macro can be combined with Rust's conditional compilation features to selectively compile either the synchronous or asynchronous version of a function based on feature flags or target environment.
+/// The `fb!` macro can be combined with Rust's conditional compilation features to selectively compile either the synchronous or asynchronous version of a function based on feature flags or target environment.
 ///
 /// Example with feature flags:
 ///
 /// ```
 /// #[cfg(feature = "async")]
-/// fb!("async", process_data, (data: Vec<u8>), -> Result<(), MyError>, {
+/// fb!(async, process_data, (data: Vec<u8>), -> Result<(), MyError>, {
 ///     // Asynchronous processing
 /// });
 ///
 /// #[cfg(not(feature = "async"))]
-/// fb!("sync", process_data, (data: Vec<u8>), -> Result<(), MyError>, {
+/// fb!(sync, process_data, (data: Vec<u8>), -> Result<(), MyError>, {
 ///     // Synchronous processing
 /// });
 /// ```
 ///
 /// ## Leveraging Macros for DRY Principles
 ///
-/// You can define a wrapper macro around `fb` to reduce repetition when declaring similar functions in different modes. This is especially handy when you have a set of functions that need to be available in both synchronous and asynchronous forms.
+/// You can define a wrapper macro around `fb!` to reduce repetition when declaring similar functions in different modes. This is especially handy when you have a set of functions that need to be available in both synchronous and asynchronous forms.
 ///
 /// Example:
 ///
-/// ```
-/// macro_rules! define_greeting_fn {
-///     ($mode:tt) => {
-///         fb!($mode, greet, (name: String), -> String, {
+///
+///  macro_rules! define_greeting_fn {
+///     (sync) => {
+///         fb!(sync, greet, (name: String), -> String, {
 ///             format!("Hello, {}", name)
 ///         });
 ///     };
-/// }
+///     (async) => {
+///         fb!(async, greet, (name: String), -> String, {
+///             format!("Hello, {}", name)
+///         });
+///     };
+///   }
+///
 ///
 /// // Now, you can easily generate both versions with minimal repetition:
-/// define_greeting_fn!("sync");
-/// define_greeting_fn!("async");
+/// define_greeting_fn!(sync);
+/// define_greeting_fn!(async);
 /// ```
 ///
-/// By leveraging the `fb` macro in your Rust projects, you can maintain cleaner and more maintainable codebases, especially when dealing with the complexities of synchronous and asynchronous programming patterns.
+/// By leveraging the `fb!` macro in your Rust projects, you can maintain cleaner and more maintainable codebases, especially when dealing with the complexities of synchronous and asynchronous programming patterns.
 
 // Improved macro definition for clarity and simplicity
 #[macro_export]
