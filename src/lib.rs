@@ -83,10 +83,10 @@
 #[macro_export]
 macro_rules! fb {
     // Unified handling for both async and sync blocks
-    ($mode:tt, $fn_name:ident, ($($param_name:ident : $param_type:ty),*), -> $return_type:ty, $body:block) => {{
-        match stringify!($mode) {
-            "async" => quote! { async fn $fn_name($($param_name : $param_type),*) -> $return_type $body },
-            _ => quote! { fn $fn_name($($param_name : $param_type),*) -> $return_type $body },
-        }
-    }};
+    (async, $fn_name:ident, ($($param_name:ident : $param_type:ty),*), -> $return_type:ty, $body:block) => {
+        async fn $fn_name($($param_name : $param_type),*) -> $return_type $body
+    };
+    (sync, $fn_name:ident, ($($param_name:ident : $param_type:ty),*), -> $return_type:ty, $body:block) => {
+        fn $fn_name($($param_name : $param_type),*) -> $return_type $body
+    };
 }
