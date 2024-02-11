@@ -1,7 +1,7 @@
 #[allow(unused_macros)]
 /// The `fb!` macro (Flexi Block) *or* (Function Builder) simplifies the generation of conditional synchronous or asynchronous functions within Rust code.
 ///
-/// It's mainly used alongside flexi_func ff proc macro to mark the async & async parts of your code.
+/// It's mainly used alongside flexi_func ff proc macro to mark the sync & async parts of your code.
 /// By specifying a mode, function name, parameters, return type, and body, this macro can dynamically create the desired function type based on the provided mode. This approach is particularly useful in contexts where both synchronous and asynchronous versions of a function might be needed, allowing for cleaner code organization and reuse.
 ///
 /// # Syntax

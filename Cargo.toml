@@ -2,7 +2,7 @@
 name = "flexi_func_declarative"
 description = "This crate exposes the fb! macro to create a function with a flexible signature."
 license = "MIT"
-version = "0.2.5"
+version = "0.2.6"
 edition = "2021"
 
 [dependencies]
