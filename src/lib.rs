@@ -2,7 +2,8 @@
 /// The `fb!` macro (Flexi Block) *or* (Function Builder) simplifies the generation of conditional synchronous or asynchronous functions within Rust code.
 ///
 /// It's mainly used alongside flexi_func ff proc macro to mark the sync & async parts of your code.
-/// By specifying a mode, function name, parameters, return type, and body, this macro can dynamically create the desired function type based on the provided mode. This approach is particularly useful in contexts where both synchronous and asynchronous versions of a function might be needed, allowing for cleaner code organization and reuse.
+/// By specifying a mode, function name, parameters, return type, and body, this macro can dynamically create the desired function type based on the provided mode.
+/// This approach is particularly useful in contexts where both synchronous and asynchronous versions of a function might be needed, allowing for cleaner code organization and reuse.
 ///
 /// # Syntax
 ///
@@ -89,11 +90,28 @@
 // Improved macro definition for clarity and simplicity
 #[macro_export]
 macro_rules! fb {
-    // Unified handling for both async and sync blocks
+    // Pattern for async function definition
     (async, $fn_name:ident, ($($param_name:ident : $param_type:ty),*), -> $return_type:ty, $body:block) => {
         async fn $fn_name($($param_name : $param_type),*) -> $return_type $body
     };
+    // Pattern for sync function definition
     (sync, $fn_name:ident, ($($param_name:ident : $param_type:ty),*), -> $return_type:ty, $body:block) => {
         fn $fn_name($($param_name : $param_type),*) -> $return_type $body
+    };
+    // Pattern for returning an async closure
+    (async, closure, $body:block) => {
+        || async move $body
+    };
+    // Pattern for returning a sync closure
+    (sync, closure, $body:block) => {
+        || $body
+    };
+    // Pattern for immediate execution of an async block
+    (async, execute, $body:block) => {
+        async move $body
+    };
+    // Pattern for immediate execution of a sync block
+    (sync, execute, $body:block) => {
+        $body
     };
 }
